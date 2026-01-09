@@ -1,0 +1,2208 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aslan Erkan  Stüdyosu | AI Müzik Üretimi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-tertiary: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #3b82f6 100%);
+            --border-color: #2a2a2a;
+            --hover-bg: #252525;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        /* API Key Button */
+        .api-key-btn {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: var(--accent-purple);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+            position: relative;
+        }
+
+        .api-key-btn::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #8b5cf6, #ec4899, #3b82f6);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .api-key-btn:hover::before {
+            opacity: 1;
+        }
+
+        .api-key-btn:hover {
+            background: rgba(139, 92, 246, 0.3);
+            border-color: var(--accent-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .api-key-btn.active {
+            background: rgba(139, 92, 246, 0.4);
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 2rem 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.1), transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-gradient);
+            z-index: -1;
+            transition: left 0.3s;
+        }
+
+        .tab-btn:hover::before {
+            left: 0;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--accent-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .tab-btn.active {
+            background: var(--accent-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card */
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            transition: left 0.3s;
+        }
+
+        .btn:hover::before {
+            left: 0;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-primary::before {
+            background: linear-gradient(45deg, #8b5cf6, #ec4899, #3b82f6);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        .btn-secondary::before {
+            background: var(--accent-gradient);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-purple);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success::before {
+            background: linear-gradient(45deg, #10b981, #059669);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-warning::before {
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+        }
+
+        .btn-warning:hover {
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger::before {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(139, 92, 246, 0.1), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .upload-area:hover::before {
+            opacity: 1;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.2);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+        }
+
+        /* Audio Player */
+        .audio-player {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--bg-secondary);
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-gradient);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .grid-item {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .grid-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .grid-item:hover {
+            background: var(--hover-bg);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box i {
+            color: var(--accent-purple);
+            margin-right: 0.5rem;
+        }
+
+        /* Waveform Visualizer */
+        .waveform {
+            height: 100px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            margin: 1rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .waveform-bar {
+            position: absolute;
+            bottom: 0;
+            width: 3px;
+            background: var(--accent-gradient);
+            animation: pulse 1s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .tab-nav {
+                gap: 0.5rem;
+            }
+
+            .tab-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Clone List */
+        .clone-list {
+            margin-top: 2rem;
+        }
+
+        .clone-item {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .clone-item:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .clone-info h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .clone-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Preset Voices Section */
+        .preset-section {
+            margin-top: 2rem;
+        }
+
+        .preset-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .preset-item {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preset-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+
+        .preset-item:hover::before {
+            opacity: 0.1;
+        }
+
+        .preset-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .preset-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .preset-male {
+            color: var(--accent-blue);
+        }
+
+        .preset-female {
+            color: var(--accent-pink);
+        }
+
+        .preset-effect {
+            color: var(--accent-green);
+        }
+
+        /* Beat Generator */
+        .beat-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .beat-param {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .beat-param label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .beat-param input[type="range"] {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        /* Lyrics Display */
+        .lyrics-display {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        /* Song Composition */
+        .composition-tracks {
+            margin-top: 2rem;
+        }
+
+        .track-item {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .track-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .track-info {
+            flex: 1;
+        }
+
+        /* Note */
+        .note {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--accent-blue);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .note strong {
+            color: var(--accent-blue);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background-color: var(--bg-secondary);
+            margin: 5% auto;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            animation: slideIn 0.3s;
+            position: relative;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .api-key-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .api-key-tab {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .api-key-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .api-key-tab.active {
+            color: var(--accent-purple);
+            border-bottom-color: var(--accent-purple);
+        }
+
+        .api-key-content {
+            display: none;
+        }
+
+        .api-key-content.active {
+            display: block;
+        }
+
+        .api-key-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--text-secondary);
+        }
+
+        .status-indicator.active {
+            background-color: #10b981;
+        }
+
+        .api-key-info {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .api-key-info a {
+            color: var(--accent-purple);
+            text-decoration: none;
+        }
+
+        .api-key-info a:hover {
+            text-decoration: underline;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        /* Free API Badge */
+        .free-badge {
+            display: inline-block;
+            background: var(--accent-green);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-music"></i> Müzik Stüdyosu AI
+            </div>
+            <nav class="nav-links">
+                <button class="api-key-btn" id="apiKeyBtn" onclick="openApiKeyModal()">
+                    <i class="fas fa-key"></i> API Anahtarları
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1></h1>
+            <p></p>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('voice-clone')">
+                <i class="fas fa-microphone"></i> SES KLONLA
+            </button>
+            <button class="tab-btn" onclick="switchTab('lyrics')">
+                <i class="fas fa-pen"></i> ŞARKI SÖZÜ YAZ
+            </button>
+            <button class="tab-btn" onclick="switchTab('beat')">
+                <i class="fas fa-drum"></i> BEAT OLUŞTUR
+            </button>
+            <button class="tab-btn" onclick="switchTab('compose')">
+                <i class="fas fa-music"></i> ŞARKI BESTELE
+            </button>
+        </div>
+
+        <!-- Voice Cloning Tab -->
+        <div id="voice-clone" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"></h2>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"></label>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn btn-secondary" onclick="startRecording()">
+                            <i class="fas fa-microphone"></i> MİKROFONLA KAYDET
+                        </button>
+                        <button class="btn btn-secondary" onclick="document.getElementById('audioUpload').click()">
+                            <i class="fas fa-upload"></i> DOSYA YÜKLE
+                        </button>
+                        <input type="file" id="audioUpload" accept="audio/*" style="display: none;" onchange="handleAudioUpload(event)">
+                    </div>
+                </div>
+
+                <div id="recordingStatus" style="display: none; margin: 1rem 0;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="loading"></div>
+                        <span>Kayıt yapılıyor...</span>
+                        <button class="btn btn-secondary" onclick="stopRecording()">
+                            <i class="fas fa-stop"></i> Durdur
+                        </button>
+                    </div>
+                </div>
+
+                <div id="audioPreview"></div>
+
+                <div class="form-group">
+                    <label class="form-label">Ses Klonu Adı</label>
+                    <input type="text" class="form-input" id="cloneName" placeholder="Örn: Kendi Sesim">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Açıklama (Opsiyonel)</label>
+                    <textarea class="form-textarea" id="cloneDescription" placeholder="Bu ses klonu hakkında notlar..."></textarea>
+                </div>
+
+                <button class="btn btn-primary" onclick="createVoiceClone()">
+                    <i class="fas fa-magic"></i> Ses Klonu Oluştur
+                </button>
+
+                <div class="clone-list" id="cloneList">
+                    <h3>Ses Klonlarım</h3>
+                    <p style="color: var(--text-secondary); margin-top: 1rem;">Henüz ses klonu oluşturmadınız.</p>
+                </div>
+            </div>
+
+            <!-- Preset Voices Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Hazır Ses Klonları</h2>
+                </div>
+
+                <div class="preset-section">
+                    <h3 class="preset-title">Erkek Sesleri</h3>
+                    <div class="preset-grid">
+                        <div class="preset-item" onclick="selectPresetVoice('erkek-derin')">
+                            <div class="preset-icon preset-male">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h4>Derin Erkek</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Güçlü ve derin ses tonu</p>
+                        </div>
+                        <div class="preset-item" onclick="selectPresetVoice('erkek-genç')">
+                            <div class="preset-icon preset-male">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h4>Genç Erkek</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Canlı ve enerjik ses tonu</p>
+                        </div>
+                        <div class="preset-item" onclick="selectPresetVoice('erkek-olgun')">
+                            <div class="preset-icon preset-male">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h4>Olgun Erkek</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Otoriter ve sakin ses tonu</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preset-section">
+                    <h3 class="preset-title">Kadın Sesleri</h3>
+                    <div class="preset-grid">
+                        <div class="preset-item" onclick="selectPresetVoice('kadın-yüksek')">
+                            <div class="preset-icon preset-female">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h4>Yüksek Kadın</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;"> parlak ve canlı ses tonu</p>
+                        </div>
+                        <div class="preset-item" onclick="selectPresetVoice('kadın-nazik')">
+                            <div class="preset-icon preset-female">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h4>Nazik Kadın</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Yumuşak ve sıcak ses tonu</p>
+                        </div>
+                        <div class="preset-item" onclick="selectPresetVoice('kadın-enerjik')">
+                            <div class="preset-icon preset-female">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h4>Enerjik Kadın</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Dinamik ve coşkulu ses tonu</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preset Sound Effects Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Hazır Ses Efektleri</h2>
+                </div>
+
+                <div class="preset-grid">
+                    <div class="preset-item" onclick="selectPresetEffect('echo')">
+                        <div class="preset-icon preset-effect">
+                            <i class="fas fa-wave-square"></i>
+                        </div>
+                        <h4>Eko</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Yankı efekti</p>
+                    </div>
+                    <div class="preset-item" onclick="selectPresetEffect('robot')">
+                        <div class="preset-icon preset-effect">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h4>Robot</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Mekanik ses efekti</p>
+                    </div>
+                    <div class="preset-item" onclick="selectPresetEffect('reverb')">
+                        <div class="preset-icon preset-effect">
+                            <i class="fas fa-church"></i>
+                        </div>
+                        <h4>Reverb</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Oda yankısı efekti</p>
+                    </div>
+                    <div class="preset-item" onclick="selectPresetEffect('pitch')">
+                        <div class="preset-icon preset-effect">
+                            <i class="fas fa-sliders-h"></i>
+                        </div>
+                        <h4>Pitch</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Ses tonu değiştirme</p>
+                    </div>
+                    <div class="preset-item" onclick="selectPresetEffect('distortion')">
+                        <div class="preset-icon preset-effect">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h4>Distorsiyon</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Bozulmuş ses efekti</p>
+                    </div>
+                    <div class="preset-item" onclick="selectPresetEffect('vocoder')">
+                        <div class="preset-icon preset-effect">
+                            <i class="fas fa-keyboard"></i>
+                        </div>
+                        <h4>Vocoder</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Synth ses efekti</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lyrics Generation Tab -->
+        <div id="lyrics" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"></h2>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Şarkı Konusu</label>
+                    <input type="text" class="form-input" id="lyricsTheme" placeholder="Örn: Aşk, Özgürlük, Yolculuk">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"></label>
+                    <select class="form-select" id="lyricsStyle">
+                        <option value="">Tarz Seçin</option>
+                        <option value="arabesk">Arabesk</option>
+                        <option value="arabick">Arabick</option>
+                        <option value="alternatif">Alternatif</option>
+                        <option value="blues">Blues</option>
+                        <option value="clupdance">Clup Dance</option>
+                        <option value="country">Country</option>
+                        <option value="electronic">Elektronik</option>
+                        <option value="klasik">Klasik</option>
+						<option value="kürtçe">Kürtçe</option>
+						<option value="pop">Pop</option>
+                        <option value="rock">Rock</option>
+                        <option value="hiphop">Hip-Hop</option>
+                        <option value="rap">rap</option>
+                        <option value="jazz">Jazz</option>
+                        <option value="raggae">Reaggae</option>
+                        <option value="folk">Folk</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"></label>
+                    <select class="form-select" id="lyricsMood">
+                        <option value="">Duygu Seçin</option>
+                        <option value="happy">Mutlu</option>
+                        <option value="sad">Üzgün</option>
+                        <option value="energetic">Enerjik</option>
+                        <option value="calm">Sakin</option>
+						<option value="calm">isyankar</option>
+                        <option value="romantic">Romantik</option>
+                        <option value="angry">Öfkeli</option>
+                        <option value="nostalgic">Nostaljik</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Ek Talimatlar (Opsiyonel)</label>
+                    <textarea class="form-textarea" id="lyricsInstructions" placeholder="Örn: Nakarat bölümü güçlü olsun, metaforlar kullan..."></textarea>
+                </div>
+
+                <button class="btn btn-primary" onclick="generateLyrics()">
+                    <i class="fas fa-magic"></i> Şarkı Sözü Üret
+                </button>
+
+                <div id="lyricsOutput" style="display: none;">
+                    <h3 style="margin-top: 2rem;">Oluşturulan Şarkı Sözü</h3>
+                    <div class="lyrics-display" id="lyricsDisplay"></div>
+                    <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                        <button class="btn btn-secondary" onclick="copyLyrics()">
+                            <i class="fas fa-copy"></i> Kopyala
+                        </button>
+                        <button class="btn btn-secondary" onclick="regenerateLyrics()">
+                            <i class="fas fa-redo"></i> Yeniden Üret
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Beat Generation Tab -->
+        <div id="beat" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Beat Üretici</h2>
+                </div>
+
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    Web Audio API kullanılarak gerçek zamanlı beat üretimi yapılmaktadır.
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Beat Türü</label>
+                    <select class="form-select" id="beatType">
+                        <option value="hiphop">Hip-Hop</option>
+                        <option value="trap">Trap</option>
+                        <option value="house">House</option>
+                        <option value="techno">Techno</option>
+                        <option value="dnb">Drum & Bass</option>
+                        <option value="lofi">Lo-Fi</option>
+                    </select>
+                </div>
+
+                <div class="beat-controls">
+                    <div class="beat-param">
+                        <label>Tempo (BPM)</label>
+                        <input type="range" id="beatTempo" min="60" max="180" value="120" oninput="updateBeatParam('tempo', this.value)">
+                        <span id="tempoValue">120</span> BPM
+                    </div>
+
+                    <div class="beat-param">
+                        <label>Bass Seviyesi</label>
+                        <input type="range" id="beatBass" min="0" max="100" value="50" oninput="updateBeatParam('bass', this.value)">
+                        <span id="bassValue">50</span>%
+                    </div>
+
+                    <div class="beat-param">
+                        <label>Davul Yoğunluğu</label>
+                        <input type="range" id="beatDrums" min="0" max="100" value="50" oninput="updateBeatParam('drums', this.value)">
+                        <span id="drumsValue">50</span>%
+                    </div>
+
+                    <div class="beat-param">
+                        <label>Hi-Hat</label>
+                        <input type="range" id="beatHihat" min="0" max="100" value="50" oninput="updateBeatParam('hihat', this.value)">
+                        <span id="hihatValue">50</span>%
+                    </div>
+                </div>
+
+                <div class="waveform" id="beatWaveform"></div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="generateBeat()">
+                        <i class="fas fa-play"></i> Beat Çal
+                    </button>
+                    <button class="btn btn-secondary" onclick="stopBeat()">
+                        <i class="fas fa-stop"></i> Durdur
+                    </button>
+                    <button class="btn btn-success" onclick="autoGenerateBeat()">
+                        <i class="fas fa-magic"></i> OTOMATİK OLUŞTUR
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadBeat()">
+                        <i class="fas fa-download"></i> İndir
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Song Composition Tab -->
+        <div id="compose" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Şarkı Besteleyici</h2>
+                </div>
+
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    Ses klonunuzu, şarkı sözlerinizi ve beatinizi birleştirerek tam bir şarkı oluşturun.
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Şarkı Adı</label>
+                    <input type="text" class="form-input" id="songTitle" placeholder="Şarkınıza bir isim verin">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Ses Klonu Seç</label>
+                    <select class="form-select" id="selectedVoice">
+                        <option value="">Henüz ses klonu yok</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Şarkı Sözleri</label>
+                    <textarea class="form-textarea" id="songLyrics" placeholder="Şarkı sözlerinizi buraya yapıştırın veya 'Şarkı Sözü Üret' sekmesinden üretin"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Beat/Enstrümantal</label>
+                    <select class="form-select" id="selectedBeat">
+                        <option value="none">Beat Yok</option>
+                        <option value="upload">Beat Yükle</option>
+                        <option value="generate">Beat Üret</option>
+                    </select>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-success" onclick="autoFillSong()">
+                        <i class="fas fa-magic"></i> OTOMATİK DOLDUR
+                    </button>
+                    <button class="btn btn-primary" onclick="composeSong()">
+                        <i class="fas fa-music"></i> ŞARKI OLUŞTUR
+                    </button>
+                </div>
+
+                <div class="composition-tracks" id="compositionTracks" style="display: none;">
+                    <h3>Şarkı Parçaları</h3>
+                    <div class="track-item">
+                        <i class="fas fa-microphone" style="color: var(--accent-purple);"></i>
+                        <div class="track-info">
+                            <h4>Vokal</h4>
+                            <p style="color: var(--text-secondary);">Ses klonu ile oluşturuldu</p>
+                        </div>
+                        <div class="track-controls">
+                            <button class="btn btn-secondary" style="padding: 0.5rem 1rem;">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="track-item">
+                        <i class="fas fa-drum" style="color: var(--accent-pink);"></i>
+                        <div class="track-info">
+                            <h4>Beat</h4>
+                            <p style="color: var(--text-secondary);">Oluşturulan enstrümantal</p>
+                        </div>
+                        <div class="track-controls">
+                            <button class="btn btn-secondary" style="padding: 0.5rem 1rem;">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 2rem;">
+                        <h3>Final Şarkı</h3>
+                        <div class="audio-player">
+                            <div class="player-controls">
+                                <button class="play-btn">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <div class="progress-bar">
+                                    <div class="progress-fill"></div>
+                                </div>
+                                <span>0:00 / 3:24</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-download"></i> İNDİR
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-share"></i> PAYLAŞ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- API Key Modal -->
+    <div id="apiKeyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeApiKeyModal()">&times;</span>
+            
+            <div class="modal-header">
+                <h2 class="modal-title">API Anahtarları</h2>
+                <p class="modal-subtitle">Müzik üretimi için API anahtarlarınızı yapılandırın</p>
+            </div>
+
+            <div class="api-key-tabs">
+                <div class="api-key-tab active" onclick="switchApiKeyTab('openai')">OpenAI</div>
+                <div class="api-key-tab" onclick="switchApiKeyTab('elevenlabs')">ElevenLabs</div>
+                <div class="api-key-tab" onclick="switchApiKeyTab('stability')">Stability AI</div>
+                <div class="api-key-tab" onclick="switchApiKeyTab('suno')">Suno <span class="free-badge">ÜCRETSİZ</span></div>
+            </div>
+
+            <!-- OpenAI API Key -->
+            <div id="openai-key" class="api-key-content active">
+                <div class="form-group">
+                    <label class="form-label">OpenAI API Anahtarı</label>
+                    <input type="password" class="form-input" id="openaiApiKey" placeholder="sk-...">
+                    <div class="api-key-status">
+                        <div class="status-indicator" id="openaiStatus"></div>
+                        <span id="openaiStatusText">API anahtarı girilmedi</span>
+                    </div>
+                </div>
+                
+                <div class="api-key-info">
+                    <p>OpenAI API anahtarınızı <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a> üzerinden alabilirsiniz.</p>
+                    <p style="margin-top: 0.5rem;">Bu anahtar, şarkı sözü üretimi ve ses sentezi için kullanılacaktır.</p>
+                </div>
+            </div>
+
+            <!-- ElevenLabs API Key -->
+            <div id="elevenlabs-key" class="api-key-content">
+                <div class="form-group">
+                    <label class="form-label">ElevenLabs API Anahtarı</label>
+                    <input type="password" class="form-input" id="elevenlabsApiKey" placeholder="ElevenLabs API anahtarı">
+                    <div class="api-key-status">
+                        <div class="status-indicator" id="elevenlabsStatus"></div>
+                        <span id="elevenlabsStatusText">API anahtarı girilmedi</span>
+                    </div>
+                </div>
+                
+                <div class="api-key-info">
+                    <p>ElevenLabs API anahtarınızı <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank">ElevenLabs Ayarlar</a> üzerinden alabilirsiniz.</p>
+                    <p style="margin-top: 0.5rem;">Bu anahtar, ses klonlama ve ses sentezi için kullanılacaktır.</p>
+                </div>
+            </div>
+
+            <!-- Stability AI API Key -->
+            <div id="stability-key" class="api-key-content">
+                <div class="form-group">
+                    <label class="form-label">Stability AI API Anahtarı</label>
+                    <input type="password" class="form-input" id="stabilityApiKey" placeholder="Stability AI API anahtarı">
+                    <div class="api-key-status">
+                        <div class="status-indicator" id="stabilityStatus"></div>
+                        <span id="stabilityStatusText">API anahtarı girilmedi</span>
+                    </div>
+                </div>
+                
+                <div class="api-key-info">
+                    <p>Stability AI API anahtarınızı <a href="https://platform.stability.ai/account/keys" target="_blank">Stability AI Platform</a> üzerinden alabilirsiniz.</p>
+                    <p style="margin-top: 0.5rem;">Bu anahtar, müzik üretimi ve beat oluşturma için kullanılacaktır.</p>
+                </div>
+            </div>
+
+            <!-- Suno API Key -->
+            <div id="suno-key" class="api-key-content">
+                <div class="form-group">
+                    <label class="form-label">Suno API Anahtarı</label>
+                    <input type="password" class="form-input" id="sunoApiKey" placeholder="Suno API anahtarı">
+                    <div class="api-key-status">
+                        <div class="status-indicator" id="sunoStatus"></div>
+                        <span id="sunoStatusText">API anahtarı girilmedi</span>
+                    </div>
+                </div>
+                
+                <div class="api-key-info">
+                    <p>Suno API anahtarınızı <a href="https://suno.com/api" target="_blank">Suno API</a> üzerinden alabilirsiniz.</p>
+                    <p style="margin-top: 0.5rem;">Bu ücretsiz API, AI ile şarkı oluşturma ve ses sentezi için kullanılacaktır.</p>
+                    <p style="margin-top: 0.5rem;"><strong>Not:</strong> Suno, günde belirli sayıda ücretsiz şarkı oluşturmanıza izin verir.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeApiKeyModal()">İptal</button>
+                <button class="btn btn-primary" onclick="saveApiKeys()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global Variables
+        let audioContext = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let currentAudioBlob = null;
+        let voiceClones = [];
+        let isRecording = false;
+        let beatInterval = null;
+        let audioSource = null;
+        let apiKeys = {
+            openai: '',
+            elevenlabs: '',
+            stability: '',
+            suno: ''
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAudioContext();
+            updateCloneList();
+            generateBeatWaveform();
+            loadApiKeys();
+            updateApiKeyStatus();
+        });
+
+        function initializeAudioContext() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.closest('.tab-btn').classList.add('active');
+        }
+
+        // API Key Modal Functions
+        function openApiKeyModal() {
+            document.getElementById('apiKeyModal').style.display = 'block';
+            loadApiKeysToForm();
+        }
+
+        function closeApiKeyModal() {
+            document.getElementById('apiKeyModal').style.display = 'none';
+        }
+
+        function switchApiKeyTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.api-key-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.api-key-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-key').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function loadApiKeys() {
+            // Load API keys from localStorage
+            const savedKeys = localStorage.getItem('musicStudioApiKeys');
+            if (savedKeys) {
+                apiKeys = JSON.parse(savedKeys);
+            }
+        }
+
+        function loadApiKeysToForm() {
+            // Load API keys to form inputs
+            document.getElementById('openaiApiKey').value = apiKeys.openai || '';
+            document.getElementById('elevenlabsApiKey').value = apiKeys.elevenlabs || '';
+            document.getElementById('stabilityApiKey').value = apiKeys.stability || '';
+            document.getElementById('sunoApiKey').value = apiKeys.suno || '';
+        }
+
+        function saveApiKeys() {
+            // Save API keys from form inputs
+            apiKeys.openai = document.getElementById('openaiApiKey').value;
+            apiKeys.elevenlabs = document.getElementById('elevenlabsApiKey').value;
+            apiKeys.stability = document.getElementById('stabilityApiKey').value;
+            apiKeys.suno = document.getElementById('sunoApiKey').value;
+
+            // Save to localStorage
+            localStorage.setItem('musicStudioApiKeys', JSON.stringify(apiKeys));
+            
+            // Update status indicators
+            updateApiKeyStatus();
+            
+            // Close modal
+            closeApiKeyModal();
+            
+            // Show success message
+            showNotification('API anahtarları başarıyla kaydedildi!');
+        }
+
+        function updateApiKeyStatus() {
+            // Update OpenAI status
+            if (apiKeys.openai) {
+                document.getElementById('openaiStatus').classList.add('active');
+                document.getElementById('openaiStatusText').textContent = 'API anahtarı yapılandırıldı';
+            } else {
+                document.getElementById('openaiStatus').classList.remove('active');
+                document.getElementById('openaiStatusText').textContent = 'API anahtarı girilmedi';
+            }
+            
+            // Update ElevenLabs status
+            if (apiKeys.elevenlabs) {
+                document.getElementById('elevenlabsStatus').classList.add('active');
+                document.getElementById('elevenlabsStatusText').textContent = 'API anahtarı yapılandırıldı';
+            } else {
+                document.getElementById('elevenlabsStatus').classList.remove('active');
+                document.getElementById('elevenlabsStatusText').textContent = 'API anahtarı girilmedi';
+            }
+            
+            // Update Stability AI status
+            if (apiKeys.stability) {
+                document.getElementById('stabilityStatus').classList.add('active');
+                document.getElementById('stabilityStatusText').textContent = 'API anahtarı yapılandırıldı';
+            } else {
+                document.getElementById('stabilityStatus').classList.remove('active');
+                document.getElementById('stabilityStatusText').textContent = 'API anahtarı girilmedi';
+            }
+            
+            // Update Suno status
+            if (apiKeys.suno) {
+                document.getElementById('sunoStatus').classList.add('active');
+                document.getElementById('sunoStatusText').textContent = 'API anahtarı yapılandırıldı';
+            } else {
+                document.getElementById('sunoStatus').classList.remove('active');
+                document.getElementById('sunoStatusText').textContent = 'API anahtarı girilmedi';
+            }
+            
+            // Update API key button status
+            const apiKeyBtn = document.getElementById('apiKeyBtn');
+            const hasAnyKey = apiKeys.openai || apiKeys.elevenlabs || apiKeys.stability || apiKeys.suno;
+            if (hasAnyKey) {
+                apiKeyBtn.classList.add('active');
+            } else {
+                apiKeyBtn.classList.remove('active');
+            }
+        }
+
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.position = 'fixed';
+            notification.style.bottom = '20px';
+            notification.style.right = '20px';
+            notification.style.background = 'var(--accent-purple)';
+            notification.style.color = 'white';
+            notification.style.padding = '1rem 1.5rem';
+            notification.style.borderRadius = '8px';
+            notification.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+            notification.style.zIndex = '3000';
+            notification.style.animation = 'slideIn 0.3s ease-out';
+            notification.textContent = message;
+            
+            // Add to body
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Voice Cloning Functions
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    currentAudioBlob = audioBlob;
+                    displayAudioPreview(audioBlob);
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                document.getElementById('recordingStatus').style.display = 'block';
+            } catch (error) {
+                alert('Mikrofon erişimi sağlanamadı: ' + error.message);
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                document.getElementById('recordingStatus').style.display = 'none';
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+        }
+
+        function handleAudioUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                currentAudioBlob = file;
+                displayAudioPreview(file);
+            }
+        }
+
+        function displayAudioPreview(blob) {
+            const url = URL.createObjectURL(blob);
+            const preview = document.getElementById('audioPreview');
+            preview.innerHTML = `
+                <div class="audio-player">
+                    <h4>Yüklenen Ses</h4>
+                    <audio controls style="width: 100%; margin-top: 1rem;">
+                        <source src="${url}" type="audio/wav">
+                    </audio>
+                </div>
+            `;
+        }
+
+        function createVoiceClone() {
+            const name = document.getElementById('cloneName').value;
+            const description = document.getElementById('cloneDescription').value;
+
+            if (!name) {
+                alert('Lütfen ses klonuna bir isim verin!');
+                return;
+            }
+
+            if (!currentAudioBlob) {
+                alert('Lütfen önce bir ses kaydı yapın veya yükleyin!');
+                return;
+            }
+
+            // Check if ElevenLabs API key is available
+            if (!apiKeys.elevenlabs) {
+                showNotification('Ses klonlama için ElevenLabs API anahtarı gereklidir. API anahtarları menüsünden ekleyin.');
+                openApiKeyModal();
+                switchApiKeyTab('elevenlabs');
+                return;
+            }
+
+            const clone = {
+                id: Date.now(),
+                name: name,
+                description: description,
+                audioBlob: currentAudioBlob,
+                createdAt: new Date().toLocaleString('tr-TR')
+            };
+
+            voiceClones.push(clone);
+            updateCloneList();
+            updateVoiceSelect();
+
+            // Reset form
+            document.getElementById('cloneName').value = '';
+            document.getElementById('cloneDescription').value = '';
+            document.getElementById('audioPreview').innerHTML = '';
+            currentAudioBlob = null;
+
+            showNotification('Ses klonu başarıyla oluşturuldu!');
+        }
+
+        function updateCloneList() {
+            const list = document.getElementById('cloneList');
+            
+            if (voiceClones.length === 0) {
+                list.innerHTML = '<h3>Ses Klonlarım</h3><p style="color: var(--text-secondary); margin-top: 1rem;">Henüz ses klonu oluşturmadınız.</p>';
+                return;
+            }
+
+            let html = '<h3>Ses Klonlarım</h3>';
+            voiceClones.forEach(clone => {
+                const url = URL.createObjectURL(clone.audioBlob);
+                html += `
+                    <div class="clone-item">
+                        <div class="clone-info">
+                            <h4>${clone.name}</h4>
+                            <p>${clone.description || 'Açıklama yok'}</p>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary);">${clone.createdAt}</p>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-secondary" onclick="playClone(${clone.id})" style="padding: 0.5rem 1rem;">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteClone(${clone.id})" style="padding: 0.5rem 1rem;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+        }
+
+        function updateVoiceSelect() {
+            const select = document.getElementById('selectedVoice');
+            select.innerHTML = '<option value="">Ses klonu seçin</option>';
+            voiceClones.forEach(clone => {
+                select.innerHTML += `<option value="${clone.id}">${clone.name}</option>`;
+            });
+        }
+
+        function playClone(id) {
+            const clone = voiceClones.find(c => c.id === id);
+            if (clone) {
+                const url = URL.createObjectURL(clone.audioBlob);
+                const audio = new Audio(url);
+                audio.play();
+            }
+        }
+
+        function deleteClone(id) {
+            if (confirm('Bu ses klonunu silmek istediğinizden emin misiniz?')) {
+                voiceClones = voiceClones.filter(c => c.id !== id);
+                updateCloneList();
+                updateVoiceSelect();
+            }
+        }
+
+        // Preset Voice Selection
+        function selectPresetVoice(voiceType) {
+            // Check if ElevenLabs API key is available
+            if (!apiKeys.elevenlabs) {
+                showNotification('Ses klonlama için ElevenLabs API anahtarı gereklidir. API anahtarları menüsünden ekleyin.');
+                openApiKeyModal();
+                switchApiKeyTab('elevenlabs');
+                return;
+            }
+
+            let voiceName, voiceDescription;
+            
+            switch(voiceType) {
+                case 'erkek-derin':
+                    voiceName = 'Derin Erkek';
+                    voiceDescription = 'Güçlü ve derin ses tonu';
+                    break;
+                case 'erkek-genç':
+                    voiceName = 'Genç Erkek';
+                    voiceDescription = 'Canlı ve enerjik ses tonu';
+                    break;
+                case 'erkek-olgun':
+                    voiceName = 'Olgun Erkek';
+                    voiceDescription = 'Otoriter ve sakin ses tonu';
+                    break;
+                case 'kadın-yüksek':
+                    voiceName = 'Yüksek Kadın';
+                    voiceDescription = 'parlak ve canlı ses tonu';
+                    break;
+                case 'kadın-nazik':
+                    voiceName = 'Nazik Kadın';
+                    voiceDescription = 'Yumuşak ve sıcak ses tonu';
+                    break;
+                case 'kadın-enerjik':
+                    voiceName = 'Enerjik Kadın';
+                    voiceDescription = 'Dinamik ve coşkulu ses tonu';
+                    break;
+            }
+
+            // Create a preset voice clone
+            const clone = {
+                id: Date.now(),
+                name: voiceName,
+                description: voiceDescription,
+                isPreset: true,
+                presetType: voiceType,
+                createdAt: new Date().toLocaleString('tr-TR')
+            };
+
+            voiceClones.push(clone);
+            updateCloneList();
+            updateVoiceSelect();
+
+            showNotification(`${voiceName} ses klonu başarıyla eklendi!`);
+        }
+
+        // Preset Effect Selection
+        function selectPresetEffect(effectType) {
+            // Check if ElevenLabs API key is available
+            if (!apiKeys.elevenlabs) {
+                showNotification('Ses efektleri için ElevenLabs API anahtarı gereklidir. API anahtarları menüsünden ekleyin.');
+                openApiKeyModal();
+                switchApiKeyTab('elevenlabs');
+                return;
+            }
+
+            let effectName, effectDescription;
+            
+            switch(effectType) {
+                case 'echo':
+                    effectName = 'Eko';
+                    effectDescription = 'Yankı efekti';
+                    break;
+                case 'robot':
+                    effectName = 'Robot';
+                    effectDescription = 'Mekanik ses efekti';
+                    break;
+                case 'reverb':
+                    effectName = 'Reverb';
+                    effectDescription = 'Oda yankısı efekti';
+                    break;
+                case 'pitch':
+                    effectName = 'Pitch';
+                    effectDescription = 'Ses tonu değiştirme';
+                    break;
+                case 'distortion':
+                    effectName = 'Distorsiyon';
+                    effectDescription = 'Bozulmuş ses efekti';
+                    break;
+                case 'vocoder':
+                    effectName = 'Vocoder';
+                    effectDescription = 'Synth ses efekti';
+                    break;
+            }
+
+            showNotification(`${effectName} efekti seçildi! Bu efekt ses klonlama işleminde uygulanacak.`);
+        }
+
+        // Lyrics Generation Functions
+        function generateLyrics() {
+            const theme = document.getElementById('lyricsTheme').value;
+            const style = document.getElementById('lyricsStyle').value;
+            const mood = document.getElementById('lyricsMood').value;
+
+            if (!theme || !style || !mood) {
+                alert('Lütfen tüm alanları doldurun!');
+                return;
+            }
+
+            // Check if OpenAI API key is available
+            if (!apiKeys.openai) {
+                showNotification('Şarkı sözü üretimi için OpenAI API anahtarı gereklidir. API anahtarları menüsünden ekleyin.');
+                openApiKeyModal();
+                switchApiKeyTab('openai');
+                return;
+            }
+
+            // Demo lyrics based on theme and mood
+            const demoLyrics = generateDemoLyrics(theme, style, mood);
+            
+            document.getElementById('lyricsDisplay').textContent = demoLyrics;
+            document.getElementById('lyricsOutput').style.display = 'block';
+        }
+
+        function generateDemoLyrics(theme, style, mood) {
+            // This is a demo. In production, you would call an AI API like OpenAI
+            const lyrics = `
+[Verse 1]
+ ${theme} hakkında düşünüyorum
+ ${mood === 'happy' ? 'Güneş gibi parlıyor' : 'Yağmur gibi düşüyor'} içime
+ ${style === 'rap' ? 'Bu ritmi hissediyorum' : 'Bu melodi akıyor'}
+Zamanın ötesinde bir yerde
+
+[Nakarat]
+ ${theme}, ${theme}
+Kalbimin derinliklerinde
+ ${mood === 'romantic' ? 'Seninle dans ediyorum' : 'Özgürce uçuyorum'}
+Bu gece sonsuza kadar
+
+[Verse 2]
+Her şey başladığı yerde bitiyor
+ ${style === 'pop' ? 'Ritim beni sarıyor' : 'Sessizlik konuşuyor'}
+ ${theme} dolu bir dünyada
+Kaybolmuş ama bulunmuş
+
+[Nakarat]
+ ${theme}, ${theme}
+Kalbimin derinliklerinde
+ ${mood === 'romantic' ? 'Seninle dans ediyorum' : 'Özgürce uçuyorum'}
+Bu gece sonsuza kadar
+
+[Bridge]
+Ve belki bir gün
+Anlayacağım tüm bunları
+ ${theme} her zaman
+Benimle olacak
+
+[Final Nakarat]
+ ${theme}, ${theme}
+Kalbimin derinliklerinde
+ ${mood === 'romantic' ? 'Seninle dans ediyorum' : 'Özgürce uçuyorum'}
+Bu gece sonsuza kadar
+            `.trim();
+
+            return lyrics;
+        }
+
+        function copyLyrics() {
+            const lyrics = document.getElementById('lyricsDisplay').textContent;
+            navigator.clipboard.writeText(lyrics);
+            showNotification('Şarkı sözü panoya kopyalandı!');
+        }
+
+        function regenerateLyrics() {
+            generateLyrics();
+        }
+
+        // Beat Generation Functions
+        let beatParams = {
+            tempo: 120,
+            bass: 50,
+            drums: 50,
+            hihat: 50
+        };
+
+        function updateBeatParam(param, value) {
+            beatParams[param] = parseInt(value);
+            document.getElementById(param + 'Value').textContent = value;
+        }
+
+        function generateBeatWaveform() {
+            const waveform = document.getElementById('beatWaveform');
+            for (let i = 0; i < 50; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'waveform-bar';
+                bar.style.left = (i * 2) + '%';
+                bar.style.height = (Math.random() * 70 + 30) + '%';
+                bar.style.animationDelay = (i * 0.05) + 's';
+                waveform.appendChild(bar);
+            }
+        }
+
+        function generateBeat() {
+            // Check if Stability AI API key is available
+            if (!apiKeys.stability) {
+                showNotification('Beat üretimi için Stability AI API anahtarı gereklidir. API anahtarları menüsünden ekleyin.');
+                openApiKeyModal();
+                switchApiKeyTab('stability');
+                return;
+            }
+
+            if (!audioContext) {
+                initializeAudioContext();
+            }
+
+            // Stop existing beat
+            stopBeat();
+
+            // Generate beat using Web Audio API
+            const tempo = beatParams.tempo;
+            let beatCount = 0;
+            beatInterval = setInterval(() => {
+                playBeatSound(beatCount % 4);
+                beatCount++;
+            }, (60 / tempo) * 1000); // Convert BPM to milliseconds
+        }
+
+        function autoGenerateBeat() {
+            // Generate random beat parameters
+            const beatTypes = ['hiphop', 'trap', 'house', 'techno', 'dnb', 'lofi'];
+            const randomType = beatTypes[Math.floor(Math.random() * beatTypes.length)];
+            const randomTempo = Math.floor(Math.random() * 60) + 90; // 90-150 BPM
+            const randomBass = Math.floor(Math.random() * 50) + 30; // 30-80%
+            const randomDrums = Math.floor(Math.random() * 50) + 30; // 30-80%
+            const randomHihat = Math.floor(Math.random() * 50) + 30; // 30-80%
+
+            // Update UI
+            document.getElementById('beatType').value = randomType;
+            document.getElementById('beatTempo').value = randomTempo;
+            document.getElementById('beatBass').value = randomBass;
+            document.getElementById('beatDrums').value = randomDrums;
+            document.getElementById('beatHihat').value = randomHihat;
+
+            // Update beat parameters
+            beatParams.tempo = randomTempo;
+            beatParams.bass = randomBass;
+            beatParams.drums = randomDrums;
+            beatParams.hihat = randomHihat;
+
+            // Update display values
+            document.getElementById('tempoValue').textContent = randomTempo;
+            document.getElementById('bassValue').textContent = randomBass;
+            document.getElementById('drumsValue').textContent = randomDrums;
+            document.getElementById('hihatValue').textContent = randomHihat;
+
+            // Auto-generate and play beat
+            generateBeat();
+            
+            showNotification('Otomatik beat oluşturuldu ve çalınıyor!');
+        }
+
+        function playBeatSound(beat) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            // Different frequencies for different beats
+            const frequencies = [200, 150, 180, 160];
+            oscillator.frequency.value = frequencies[beat];
+
+            // Adjust volume based on beat type
+            const volumes = [
+                beatParams.bass / 100,
+                beatParams.drums / 100,
+                beatParams.hihat / 100,
+                beatParams.drums / 100
+            ];
+            gainNode.gain.value = volumes[beat] * 0.3;
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+
+            // Fade out
+            gainNode.gain.exponentialRampToValueAtTime(
+                0.01,
+                audioContext.currentTime + 0.1
+            );
+        }
+
+        function stopBeat() {
+            if (beatInterval) {
+                clearInterval(beatInterval);
+                beatInterval = null;
+            }
+        }
+
+        function downloadBeat() {
+            alert('Beat indirme özelliği için ses kaydedici entegrasyonu gereklidir. Bu demo sürümünde mevcut değildir.');
+        }
+
+        // Song Composition Functions
+        function autoFillSong() {
+            // Generate random song title
+            const titles = [
+                'Yıldızlar Altında',
+                'Kayıp Melodi',
+                'Rüya Şarkısı',
+                'Zamanın Dışında',
+                'Kalbin Ritmi',
+                'Gece Yolculuğu',
+                'Aşkın Sesi',
+                'Özgürlük',
+                'Yeni Başlangıç',
+                'Unutulmaz Anlar'
+            ];
+            const randomTitle = titles[Math.floor(Math.random() * titles.length)];
+            document.getElementById('songTitle').value = randomTitle;
+
+            // Select random voice clone if available
+            if (voiceClones.length > 0) {
+                const randomClone = voiceClones[Math.floor(Math.random() * voiceClones.length)];
+                document.getElementById('selectedVoice').value = randomClone.id;
+            }
+
+            // Generate random lyrics
+            const themes = ['aşk', 'özgürlük', 'dostluk', 'umut', 'gelecek', 'hayat', 'düşler', 'yolculuk'];
+            const styles = ['pop', 'rock', 'rap', 'jazz', 'electronic'];
+            const moods = ['happy', 'energetic', 'romantic', 'calm'];
+            
+            const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+            const randomStyle = styles[Math.floor(Math.random() * styles.length)];
+            const randomMood = moods[Math.floor(Math.random() * moods.length)];
+
+            const autoLyrics = generateDemoLyrics(randomTheme, randomStyle, randomMood);
+            document.getElementById('songLyrics').value = autoLyrics;
+
+            // Select random beat option
+            const beatOptions = ['none', 'upload', 'generate'];
+            const randomBeat = beatOptions[Math.floor(Math.random() * beatOptions.length)];
+            document.getElementById('selectedBeat').value = randomBeat;
+
+            showNotification('Şarkı bilgileri otomatik olarak dolduruldu!');
+        }
+
+        function composeSong() {
+            const title = document.getElementById('songTitle').value;
+            const voice = document.getElementById('selectedVoice').value;
+            const lyrics = document.getElementById('songLyrics').value;
+
+            if (!title) {
+                alert('Lütfen şarkıya bir isim verin!');
+                return;
+            }
+
+            if (!lyrics) {
+                alert('Lütfen şarkı sözlerini girin!');
+                return;
+            }
+
+            // Check if API keys are available
+            if (!apiKeys.openai || !apiKeys.elevenlabs || !apiKeys.stability) {
+                showNotification('Şarkı oluşturmak için tüm API anahtarlarının yapılandırılması gerekir.');
+                openApiKeyModal();
+                return;
+            }
+
+            // Show composition result
+            document.getElementById('compositionTracks').style.display = 'block';
+            
+            showNotification('Şarkı oluşturuluyor! Gerçek üretim için API entegrasyonu gereklidir.');
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('apiKeyModal');
+            if (event.target == modal) {
+                closeApiKeyModal();
+            }
+        }
+    </script>
+</body>
+</html>
